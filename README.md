@@ -1,2 +1,2 @@
 # Vinyl_Record_Collection
-My record collection displayed using flippable cards.
+Exercise 2: My record collection displayed using flippable cards. Using my own custom JSON info.
