@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>My Vinyl Collection</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background: #000;
+            color: white;
+            font-family: Arial, Helvetica, sans-serif;
+            min-height: 100vh;
+            padding: 60px 8%;
+        }
+
+
+        /* HEADER */
+
+        header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        header h1 {
+            font-size: 48px;
+            margin-bottom: 12px;
+            letter-spacing: -1px;
+        }
+
+        header p {
+            color: #999;
+            font-size: 17px;
+        }
+
+
+        /* VINYL GRID */
+
+        #collection {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 35px;
+            max-width: 1200px;
+            margin: auto;
+        }
+
+
+        /* CARD */
+
+        .card {
+            height: 470px;
+            perspective: 1200px;
+            cursor: pointer;
+        }
+
+        .card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+
+            transition: transform 0.7s cubic-bezier(.2,.7,.2,1);
+
+            transform-style: preserve-3d;
+        }
+
+
+        /* FLIP CARD */
+
+        .card.flipped .card-inner {
+            transform: rotateY(180deg);
+        }
+
+
+        /* FRONT + BACK */
+
+        .card-front,
+        .card-back {
+            position: absolute;
+
+            width: 100%;
+            height: 100%;
+
+            border-radius: 18px;
+
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+
+            overflow: hidden;
+        }
+
+
+        /* FRONT */
+
+        .card-front {
+            background: #1a1a1a;
+            padding: 14px;
+
+            display: flex;
+            flex-direction: column;
+
+            transition: transform 0.3s ease,
+                        box-shadow 0.3s ease;
+        }
+
+        .card:hover .card-front {
+            transform: translateY(-8px);
+
+            box-shadow: 0 20px 50px rgba(255,255,255,0.08);
+        }
+
+        .album-cover {
+            width: 100%;
+            height: 350px;
+
+            object-fit: cover;
+
+            border-radius: 10px;
+        }
+
+        .front-info {
+            padding: 16px 4px 5px;
+        }
+
+        .front-info h2 {
+            font-size: 21px;
+            margin-bottom: 6px;
+        }
+
+        .front-info p {
+            color: #999;
+            font-size: 14px;
+        }
+
+
+        /* BACK */
+
+        .card-back {
+            background: #1a1a1a;
+
+            padding: 30px;
+
+            transform: rotateY(180deg);
+
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .card-back h2 {
+            font-size: 28px;
+            margin-bottom: 5px;
+        }
+
+        .artist {
+            color: #999;
+            margin-bottom: 25px;
+        }
+
+        .details {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .detail {
+            border-bottom: 1px solid #333;
+            padding-bottom: 10px;
+        }
+
+        .detail span {
+            display: block;
+            color: #777;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 4px;
+        }
+
+        .detail p {
+            font-size: 15px;
+            line-height: 1.4;
+        }
+
+        .songs {
+            color: #ddd;
+        }
+
+        .flip-message {
+            color: #666;
+            font-size: 12px;
+            text-align: center;
+            margin-top: 15px;
+        }
+
+
+        /* RESPONSIVE */
+
+        @media (max-width: 900px) {
+
+            #collection {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+        }
+
+        @media (max-width: 600px) {
+
+            body {
+                padding: 40px 20px;
+            }
+
+            header h1 {
+                font-size: 36px;
+            }
+
+            #collection {
+                grid-template-columns: 1fr;
+            }
+
+        }
+
+    </style>
+</head>
+
+
+<body>
+
+
+    <header>
+
+        <h1>My Vinyl Collection</h1>
+
+        <p>
+            Six albums from my personal collection.
+            Click an album to explore.
+        </p>
+
+    </header>
+
+
+    <!-- JavaScript will create the album cards here -->
+
+    <main id="collection"></main>
+
+
+
+    <script>
+
+
+        // ----------------------------------
+        // VINYL COLLECTION DATA
+        // ----------------------------------
+
+        const vinylCollection = {
+
+            name: "My Vinyl Record Collection",
+
+            records: [
+
+                {
+                    artist: "Björk",
+                    album: "Debut",
+                    release_year: 1993,
+
+                    genre: [
+                        "Alternative",
+                        "Electronic",
+                        "Art Pop"
+                    ],
+
+                    label: "One Little Indian / Elektra",
+
+                    tracks: 11,
+
+                    notable_songs: [
+                        "Human Behaviour",
+                        "Venus as a Boy",
+                        "Big Time Sensuality"
+                    ],
+
+                    image:
+                    "images/Björk-Debut-1993.png"
+
+                },
+
+
+                {
+                    artist: "Björk",
+                    album: "Post",
+                    release_year: 1995,
+
+                    genre: [
+                        "Art Pop",
+                        "Electronic",
+                        "Experimental"
+                    ],
+
+                    label: "One Little Indian / Elektra",
+
+                    tracks: 11,
+
+                    notable_songs: [
+                        "Army of Me",
+                        "Hyperballad",
+                        "It's Oh So Quiet"
+                    ],
+
+                    image:
+                    "https://us.rarevinyl.com/cdn/shop/files/bjork-post-pink-vinyl-uk-vinyl-lp-album-record-tplp51ltd-865172_1200x1196.jpg"
+
+                },
+
+
+                {
+                    artist: "The Weeknd",
+                    album: "After Hours",
+                    release_year: 2020,
+
+                    genre: [
+                        "R&B",
+                        "Pop",
+                        "Synth-Pop"
+                    ],
+
+                    label: "XO / Republic Records",
+
+                    tracks: 14,
+
+                    notable_songs: [
+                        "Blinding Lights",
+                        "Save Your Tears",
+                        "After Hours"
+                    ],
+
+                    image:
+                    "https://cdn.webshopapp.com/shops/134936/files/463598395/the-weeknd-after-hours-vinyl-lp.jpg"
+
+                },
+
+
+                {
+                    artist: "SZA",
+                    album: "Ctrl",
+                    release_year: 2017,
+
+                    genre: [
+                        "R&B",
+                        "Neo-Soul",
+                        "Hip-Hop"
+                    ],
+
+                    label: "Top Dawg Entertainment / RCA Records",
+
+                    tracks: 14,
+
+                    notable_songs: [
+                        "Love Galore",
+                        "The Weekend",
+                        "Supermodel"
+                    ],
+
+                    image:
+                    "https://images.squarespace-cdn.com/content/v1/56c346b607eaa09d9189a870/1514745602914-E8IZGM96KUMRCUJZRZSV/SZA_Album-Artwork_CTRL-album-EXPLICIT.jpg"
+
+                },
+
+
+                {
+                    artist: "Fall Out Boy",
+                    album: "Save Rock and Roll",
+                    release_year: 2013,
+
+                    genre: [
+                        "Pop Punk",
+                        "Pop Rock",
+                        "Alternative Rock"
+                    ],
+
+                    label: "Island Records",
+
+                    tracks: 11,
+
+                    notable_songs: [
+                        "The Phoenix",
+                        "My Songs Know What You Did in the Dark",
+                        "Alone Together"
+                    ],
+
+                    image:
+                    "images/falloutboy.jpg"
+
+                },
+
+
+                {
+                    artist: "Lana Del Rey",
+                    album: "Born to Die",
+                    release_year: 2012,
+
+                    genre: [
+                        "Alternative Pop",
+                        "Indie Pop",
+                        "Baroque Pop"
+                    ],
+
+                    label: "Interscope / Polydor",
+
+                    tracks: 12,
+
+                    notable_songs: [
+                        "Born to Die",
+                        "Video Games",
+                        "Summertime Sadness"
+                    ],
+
+                    image:
+                    "images/BornToDieAlbumCover.png"
+
+                }
+
+            ]
+
+        };
+
+
+
+        // ----------------------------------
+        // TARGET THE HTML ELEMENT
+        // ----------------------------------
+
+        const collection =
+            document.querySelector("#collection");
+
+
+
+        // ----------------------------------
+        // CREATE CARDS FROM THE DATA
+        // ----------------------------------
+
+        vinylCollection.records.forEach(function(record) {
+
+
+            // Create a new card
+
+            const card =
+                document.createElement("article");
+
+
+            card.classList.add("card");
+
+
+
+            // ----------------------------------
+            // TEMPLATE LITERAL
+            // ----------------------------------
+
+            card.innerHTML = `
+
+                <div class="card-inner">
+
+
+                    <!-- FRONT OF CARD -->
+
+                    <div class="card-front">
+
+                        <img
+                            class="album-cover"
+                            src="${record.image}"
+                            alt="${record.album} album cover"
+                            onerror="this.onerror=null;this.src='https://via.placeholder.com/600x600?text=Album+Cover'"
+                        >
+
+                        <div class="front-info">
+
+                            <h2>${record.album}</h2>
+
+                            <p>${record.artist}</p>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- BACK OF CARD -->
+
+                    <div class="card-back">
+
+                        <div>
+
+                            <h2>${record.album}</h2>
+
+                            <p class="artist">
+                                ${record.artist}
+                            </p>
+
+
+                            <div class="details">
+
+
+                                <div class="detail">
+
+                                    <span>Release Year</span>
+
+                                    <p>
+                                        ${record.release_year}
+                                    </p>
+
+                                </div>
+
+
+                                <div class="detail">
+
+                                    <span>Genre</span>
+
+                                    <p>
+                                        ${record.genre.join(", ")}
+                                    </p>
+
+                                </div>
+
+
+                                <div class="detail">
+
+                                    <span>Record Label</span>
+
+                                    <p>
+                                        ${record.label}
+                                    </p>
+
+                                </div>
+
+
+                                <div class="detail">
+
+                                    <span>Tracks</span>
+
+                                    <p>
+                                        ${record.tracks}
+                                    </p>
+
+                                </div>
+
+
+                                <div class="detail">
+
+                                    <span>Notable Songs</span>
+
+                                    <p class="songs">
+                                        ${record.notable_songs.join(", ")}
+                                    </p>
+
+                                </div>
+
+
+                            </div>
+
+                        </div>
+
+
+                        <p class="flip-message">
+                            Click the card to flip back
+                        </p>
+
+                    </div>
+
+
+                </div>
+
+            `;
+
+
+
+            // ----------------------------------
+            // CLICK TO FLIP
+            // ----------------------------------
+
+            card.addEventListener("click", function() {
+
+                card.classList.toggle("flipped");
+
+            });
+
+
+
+            // ----------------------------------
+            // ADD CARD TO PAGE
+            // ----------------------------------
+
+            collection.appendChild(card);
+
+
+        });
+
+
+    </script>
+
+</body>
+
+</html>
